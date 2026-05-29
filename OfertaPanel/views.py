@@ -1,3 +1,6 @@
+import os
+import re
+import json
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
@@ -13,20 +16,105 @@ def generator_szablonow(request):
 
 @login_required
 def lista_kategorii(request):
-    kategorie = Kategorie.objects.all().order_by('kolejnosc', 'nazwa')
-    return render(request, 'OfertaPanel/lista_kategorii.html', {'kategorie': kategorie})
+    query = request.GET.get('q', '').strip()
+    sort_by = request.GET.get('sort', 'kolejnosc').strip()
+    direction = request.GET.get('dir', 'asc').strip()
+    pub_filter = request.GET.get('pub', 'all').strip()
+
+    kategorie = Kategorie.objects.all()
+
+    # Wyszukiwanie po wzorcu (pattern matching)
+    if query:
+        kategorie = kategorie.filter(nazwa__icontains=query)
+
+    # Filtrowanie statusu publikacji
+    if pub_filter == 'true':
+        kategorie = kategorie.filter(publikuj=True)
+    elif pub_filter == 'false':
+        kategorie = kategorie.filter(publikuj=False)
+
+    # Obsługiwane pola do sortowania
+    allowed_sort_fields = {
+        'id': 'id',
+        'nazwa': 'nazwa',
+        'kolejnosc': 'kolejnosc'
+    }
+    db_sort_field = allowed_sort_fields.get(sort_by, 'kolejnosc')
+
+    if direction == 'desc':
+        kategorie = kategorie.order_by(f'-{db_sort_field}')
+    else:
+        kategorie = kategorie.order_by(db_sort_field)
+
+    return render(request, 'OfertaPanel/lista_kategorii.html', {
+        'kategorie': kategorie,
+        'query': query,
+        'sort_by': sort_by,
+        'direction': direction,
+        'pub_filter': pub_filter
+    })
+
 
 @login_required
 def lista_szkolen(request):
     query = request.GET.get('q', '').strip()
+    sort_by = request.GET.get('sort', 'kolejnosc').strip()
+    direction = request.GET.get('dir', 'asc').strip()
+    pub_filter = request.GET.get('pub', 'all').strip()
+    kat_filter = request.GET.get('kat', '').strip()
+
     szkolenia = Szkolenie.objects.select_related('kategoria').all()
+
+    # Wyszukiwanie po wzorcu (tytul lub numer)
     if query:
-        # Dopasowanie do wzorca (pattern matching using __icontains)
         szkolenia = szkolenia.filter(tytul__icontains=query)
-    
-    # Ograniczenie liczby rekordów (limiting, e.g. limit to first 100)
-    szkolenia = szkolenia.order_by('kolejnosc', 'tytul')[:100]
-    return render(request, 'OfertaPanel/lista_szkolen.html', {'szkolenia': szkolenia, 'query': query})
+
+    # Filtr publikacji
+    if pub_filter == 'true':
+        szkolenia = szkolenia.filter(publikuj=True)
+    elif pub_filter == 'false':
+        szkolenia = szkolenia.filter(publikuj=False)
+
+    # Filtr kategorii
+    if kat_filter:
+        try:
+            szkolenia = szkolenia.filter(kategoria_id=int(kat_filter))
+        except ValueError:
+            pass
+
+    # Sortowanie
+    allowed_sort_fields = {
+        'id': 'id',
+        'numer': 'numer',
+        'tytul': 'tytul',
+        'kategoria': 'kategoria__nazwa',
+        'cena': 'cena',
+        'liczba_godzin': 'liczba_godzin',
+        'kolejnosc': 'kolejnosc'
+    }
+    db_sort_field = allowed_sort_fields.get(sort_by, 'kolejnosc')
+
+    if direction == 'desc':
+        szkolenia = szkolenia.order_by(f'-{db_sort_field}')
+    else:
+        szkolenia = szkolenia.order_by(db_sort_field)
+
+    # Ograniczenie do 100
+    szkolenia = szkolenia[:100]
+
+    # Lista kategorii do dropdowna
+    kategorie_list = Kategorie.objects.all().order_by('nazwa')
+
+    return render(request, 'OfertaPanel/lista_szkolen.html', {
+        'szkolenia': szkolenia,
+        'query': query,
+        'sort_by': sort_by,
+        'direction': direction,
+        'pub_filter': pub_filter,
+        'kat_filter': kat_filter,
+        'kategorie_list': kategorie_list
+    })
+
 
 @login_required
 def dodaj_kategorie(request):
@@ -116,9 +204,6 @@ def api_courses(request):
     return JsonResponse(data, safe=False)
 
 # ================= TEMPLATE GENERATOR DJANGO API =================
-import os
-import re
-import json
 from django.conf import settings
 from django.utils.text import slugify
 from .models import SzablonGeneratora

@@ -85,3 +85,38 @@ class IssuesTests(TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['status'], 'success')
         self.assertTrue(ZgloszenieProblemu.objects.filter(autor_zgloszenia='API Form User').exists())
+
+    def test_lista_problemow_filters_and_sorting(self):
+        ZgloszenieProblemu.objects.all().delete()
+        
+        pr1 = ZgloszenieProblemu.objects.create(
+            autor_zgloszenia="Alicja",
+            temat_zgloszenia="B_Problem z panelem",
+            tresc="Cos nie dziala",
+            modul_aplikacji="panel_oferty"
+        )
+        pr2 = ZgloszenieProblemu.objects.create(
+            autor_zgloszenia="Bartosz",
+            temat_zgloszenia="A_Blad na stronie glownej",
+            tresc="Tekst rozjechany",
+            modul_aplikacji="oferta_publiczna"
+        )
+
+        # Test search
+        response = self.client.get(f"{reverse('lista_problemow')}?q=Rozjechany")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Bartosz")
+        self.assertNotContains(response, "Alicja")
+
+        # Test filter modul
+        response = self.client.get(f"{reverse('lista_problemow')}?modul=panel_oferty")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Alicja")
+        self.assertNotContains(response, "Bartosz")
+
+        # Test sorting
+        response = self.client.get(f"{reverse('lista_problemow')}?sort=temat_zgloszenia&dir=asc")
+        probs = list(response.context['problemy'])
+        self.assertEqual(probs[0].autor_zgloszenia, "Bartosz") # "A_" comes first
+        self.assertEqual(probs[1].autor_zgloszenia, "Alicja")
+

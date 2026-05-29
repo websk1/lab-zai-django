@@ -8,17 +8,75 @@
     <p class="page-description">Przegląd wszystkich kategorii i podkategorii w bazie danych.</p>
 </div>
 
+<div class="toolbar-container">
+    <form method="get" class="toolbar-form">
+        <div class="toolbar-group">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj po nazwie..." class="form-control" style="padding: 0.5rem 0.75rem;">
+        </div>
+        <div class="toolbar-group">
+            <select name="pub" class="toolbar-select">
+                <option value="all" {% if pub_filter == 'all' %}selected{% endif %}>Status: Wszystkie</option>
+                <option value="true" {% if pub_filter == 'true' %}selected{% endif %}>Tylko opublikowane</option>
+                <option value="false" {% if pub_filter == 'false' %}selected{% endif %}>Tylko ukryte</option>
+            </select>
+        </div>
+        <!-- Preserve sorting parameters when submitting filters -->
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <input type="hidden" name="dir" value="{{ direction }}">
+        <div class="toolbar-group actions">
+            <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Filtruj</button>
+            {% if query or pub_filter != 'all' %}
+                <a href="{% url 'lista_kategorii' %}" class="btn-logout" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1rem;">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
 <div class="table-container">
     <table class="modern-table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Nazwa</th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&sort=id&dir={% if sort_by == 'id' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'id' %}sort-active{% endif %}">
+                        ID
+                        <span class="sort-icon">
+                            {% if sort_by == 'id' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&sort=nazwa&dir={% if sort_by == 'nazwa' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'nazwa' %}sort-active{% endif %}">
+                        Nazwa
+                        <span class="sort-icon">
+                            {% if sort_by == 'nazwa' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
                 <th>Kategoria Nadrzędna</th>
                 <th>Status Publikacji</th>
-                <th>Kolejność</th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&sort=kolejnosc&dir={% if sort_by == 'kolejnosc' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'kolejnosc' %}sort-active{% endif %}">
+                        Kolejność
+                        <span class="sort-icon">
+                            {% if sort_by == 'kolejnosc' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
             </tr>
         </thead>
+
         <tbody>
             {% for kat in kategorie %}
             <tr>

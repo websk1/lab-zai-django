@@ -38,12 +38,55 @@ def zgloszenie_problemu(request):
 
     return render(request, 'Issues/zgloszenie_problemu.html')
 
+from django.db.models import Q
+
 def lista_problemow(request):
     """
-    HTML view: displays a list of all reported problems.
+    HTML view: displays a list of all reported problems with search, filtering, and sorting.
     """
-    problemy = ZgloszenieProblemu.objects.all().order_by('-data_i_godzina_zgloszenia')
-    return render(request, 'Issues/lista_problemow.html', {'problemy': problemy})
+    query = request.GET.get('q', '').strip()
+    sort_by = request.GET.get('sort', 'data_i_godzina_zgloszenia').strip()
+    direction = request.GET.get('dir', 'desc').strip()
+    modul_filter = request.GET.get('modul', 'all').strip()
+
+    problemy = ZgloszenieProblemu.objects.all()
+
+    # Wyszukiwanie po wzorcu (temat, autor, tresc)
+    if query:
+        problemy = problemy.filter(
+            Q(temat_zgloszenia__icontains=query) |
+            Q(autor_zgloszenia__icontains=query) |
+            Q(tresc__icontains=query)
+        )
+
+    # Filtrowanie po module
+    if modul_filter != 'all':
+        problemy = problemy.filter(modul_aplikacji=modul_filter)
+
+    # Sortowanie
+    allowed_sort_fields = {
+        'id': 'id',
+        'data_i_godzina_zgloszenia': 'data_i_godzina_zgloszenia',
+        'temat_zgloszenia': 'temat_zgloszenia',
+        'autor_zgloszenia': 'autor_zgloszenia',
+        'modul_aplikacji': 'modul_aplikacji'
+    }
+    db_sort_field = allowed_sort_fields.get(sort_by, 'data_i_godzina_zgloszenia')
+
+    if direction == 'desc':
+        problemy = problemy.order_by(f'-{db_sort_field}')
+    else:
+        problemy = problemy.order_by(db_sort_field)
+
+    return render(request, 'Issues/lista_problemow.html', {
+        'problemy': problemy,
+        'query': query,
+        'sort_by': sort_by,
+        'direction': direction,
+        'modul_filter': modul_filter,
+        'choices_modul': ZgloszenieProblemu.CHOICES_MODUL
+    })
+
 
 def widok_problemu(request):
     """

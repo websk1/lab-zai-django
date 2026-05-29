@@ -17,6 +17,10 @@ class Kategorie(models.Model):
     def __str__(self):
         return self.nazwa
 
+    class Meta:
+        verbose_name = "Kategoria"
+        verbose_name_plural = "Kategorie"
+
 
 class Szkolenie(models.Model):
     # Relacja fk do modelu Kategorie (Id kategorii)
@@ -31,3 +35,7 @@ class Szkolenie(models.Model):
 
     def __str__(self):
         return f"{self.numer} - {self.tytul}"
+
+    class Meta:
+        verbose_name = "Szkolenie"
+        verbose_name_plural = "Szkolenia"

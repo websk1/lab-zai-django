@@ -13,7 +13,38 @@
     <p class="section-desc">Przejrzyj listę dostępnych szkoleń w tej kategorii.</p>
 </section>
 
+<div class="public-toolbar" style="margin-bottom: 2rem;">
+    <form method="get" class="public-toolbar-form">
+        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj szkolenia..." class="form-control" style="flex: 1; padding: 0.5rem 0.75rem;">
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <input type="hidden" name="dir" value="{{ direction }}">
+        <button type="submit" class="btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">Filtruj</button>
+        {% if query %}
+            <a href="?sort={{ sort_by }}&dir={{ direction }}" class="btn-back" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Reset</a>
+        {% endif %}
+    </form>
+
+    <div class="sort-tags-container">
+        <span class="sort-label">Sortowanie:</span>
+        <div class="sort-tags">
+            <a href="?q={{ query }}&sort=kolejnosc&dir={% if sort_by == 'kolejnosc' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'kolejnosc' %}active{% endif %}">
+                Kolejność {% if sort_by == 'kolejnosc' %}{% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+            </a>
+            <a href="?q={{ query }}&sort=tytul&dir={% if sort_by == 'tytul' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'tytul' %}active{% endif %}">
+                Tytuł {% if sort_by == 'tytul' %}{% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+            </a>
+            <a href="?q={{ query }}&sort=cena&dir={% if sort_by == 'cena' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'cena' %}active{% endif %}">
+                Cena {% if sort_by == 'cena' %}{% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+            </a>
+            <a href="?q={{ query }}&sort=liczba_godzin&dir={% if sort_by == 'liczba_godzin' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'liczba_godzin' %}active{% endif %}">
+                Godziny {% if sort_by == 'liczba_godzin' %}{% if direction == 'asc' %}▲{% else %}▼{% endif %}{% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+
 {% if szkolenia %}
+
     <div class="course-list">
         {% for sz in szkolenia %}
             <a href="{% url 'opis_szkolenia' kateg=kat_nazwa course=sz.numer %}" class="course-item">

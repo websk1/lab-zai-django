@@ -16,13 +16,40 @@ def kategorie(request):
 def lista_szkolen_kat(request, kategoria):
     # Get category by name, or 404
     kat = get_object_or_404(Kategorie, nazwa=kategoria, publikuj=True)
-    # Get published courses in the category
-    szkolenia = Szkolenie.objects.filter(kategoria=kat, publikuj=True).order_by('kolejnosc')
     
+    query = request.GET.get('q', '').strip()
+    sort_by = request.GET.get('sort', 'kolejnosc').strip()
+    direction = request.GET.get('dir', 'asc').strip()
+
+    # Get published courses in the category
+    szkolenia = Szkolenie.objects.filter(kategoria=kat, publikuj=True)
+
+    # Wyszukiwanie po wzorcu (tytul)
+    if query:
+        szkolenia = szkolenia.filter(tytul__icontains=query)
+
+    # Sortowanie
+    allowed_sort_fields = {
+        'tytul': 'tytul',
+        'cena': 'cena',
+        'liczba_godzin': 'liczba_godzin',
+        'kolejnosc': 'kolejnosc'
+    }
+    db_sort_field = allowed_sort_fields.get(sort_by, 'kolejnosc')
+
+    if direction == 'desc':
+        szkolenia = szkolenia.order_by(f'-{db_sort_field}')
+    else:
+        szkolenia = szkolenia.order_by(db_sort_field)
+
     return render(request, 'OfertaPubliczna/lista_szkolen.html', {
         'kat_nazwa': kat.nazwa,
-        'szkolenia': szkolenia
+        'szkolenia': szkolenia,
+        'query': query,
+        'sort_by': sort_by,
+        'direction': direction
     })
+
 
 def opis_szkolenia(request, kateg, course):
     # Get category and specific course by numer, or 404

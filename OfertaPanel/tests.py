@@ -100,6 +100,34 @@ class GeneratorPanelTests(TestCase):
         json_dir = get_json_templates_dir()
         self.assertTrue(os.path.exists(os.path.join(json_dir, 'new-json-doc.json')))
 
+    def test_api_save_json_update(self):
+        from .views import get_json_templates_dir
+        json_dir = get_json_templates_dir()
+        # Create a file first
+        with open(os.path.join(json_dir, 'update_test.json'), 'w', encoding='utf-8') as f:
+            json.dump({"nazwa": "Original", "typ": "szablon", "tresc": "Old"}, f)
+            
+        payload = {
+            "nazwa": "Updated Name",
+            "typ": "szablon",
+            "tresc": "New content",
+            "id": "update_test.json",
+            "metoda": "UPDATE"
+        }
+        response = self.client.post(
+            f"{reverse('api_save')}?source=json",
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 200)
+        
+        # Read the file and verify update
+        with open(os.path.join(json_dir, 'update_test.json'), 'r', encoding='utf-8') as f:
+            content = json.load(f)
+            self.assertEqual(content['nazwa'], "Updated Name")
+            self.assertEqual(content['tresc'], "New content")
+
+
     def test_public_form_templates(self):
         # Create a form template JSON file
         from .views import get_json_templates_dir
@@ -133,3 +161,61 @@ class GeneratorPanelTests(TestCase):
         response2 = client.get(f"{reverse('api_message_templates')}?id={self.db_template.id}&imie=Adam&nazwisko=Nowak")
         self.assertEqual(response2.status_code, 200)
         self.assertContains(response2, "Witaj Adam Nowak!")
+
+    def test_lista_kategorii_filters_and_sorting(self):
+        from OfertaPubliczna.models import Kategorie
+        Kategorie.objects.all().delete()
+        
+        k1 = Kategorie.objects.create(nazwa="B_Programowanie", kolejnosc=2, publikuj=True)
+        k2 = Kategorie.objects.create(nazwa="A_BazyDanych", kolejnosc=1, publikuj=False)
+        
+        # Test search
+        response = self.client.get(f"{reverse('lista_kategorii')}?q=Bazy")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "A_BazyDanych")
+        self.assertNotContains(response, "B_Programowanie")
+        
+        # Test filter status
+        response = self.client.get(f"{reverse('lista_kategorii')}?pub=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "B_Programowanie")
+        self.assertNotContains(response, "A_BazyDanych")
+        
+        # Test sorting
+        response = self.client.get(f"{reverse('lista_kategorii')}?sort=nazwa&dir=asc")
+        kats = list(response.context['kategorie'])
+        self.assertEqual(kats[0].nazwa, "A_BazyDanych")
+        self.assertEqual(kats[1].nazwa, "B_Programowanie")
+
+    def test_lista_szkolen_filters_and_sorting(self):
+        from OfertaPubliczna.models import Kategorie, Szkolenie
+        Szkolenie.objects.all().delete()
+        Kategorie.objects.all().delete()
+        
+        kat = Kategorie.objects.create(nazwa="IT", kolejnosc=1, publikuj=True)
+        s1 = Szkolenie.objects.create(kategoria=kat, numer="C1", tytul="Advanced Python", cena=100.0, liczba_godzin=10, kolejnosc=2, publikuj=True)
+        s2 = Szkolenie.objects.create(kategoria=kat, numer="C2", tytul="Django Basics", cena=200.0, liczba_godzin=20, kolejnosc=1, publikuj=False)
+        
+        # Test search
+        response = self.client.get(f"{reverse('lista_szkolen')}?q=Django")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Django Basics")
+        self.assertNotContains(response, "Advanced Python")
+        
+        # Test status filter
+        response = self.client.get(f"{reverse('lista_szkolen')}?pub=false")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Django Basics")
+        self.assertNotContains(response, "Advanced Python")
+        
+        # Test category filter
+        response = self.client.get(f"{reverse('lista_szkolen')}?kat={kat.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['szkolenia']), 2)
+        
+        # Test sorting
+        response = self.client.get(f"{reverse('lista_szkolen')}?sort=cena&dir=desc")
+        szkols = list(response.context['szkolenia'])
+        self.assertEqual(szkols[0].numer, "C2")
+        self.assertEqual(szkols[1].numer, "C1")
+

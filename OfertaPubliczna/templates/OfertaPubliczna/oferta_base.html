@@ -17,7 +17,8 @@
             <a href="{% url 'kategorie' %}" class="logo">
                 Szkolenia<strong>Portal</strong>
             </a>
-            <div class="nav-links">
+            <div class="nav-links" style="display: flex; gap: 1rem; align-items: center;">
+                <a href="{% url 'zgloszenie_problemu' %}" style="color: var(--text-muted); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: var(--transition);" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Zgłoś Problem</a>
                 <a href="{% url 'panel_glowny' %}" class="btn-panel-link">Panel Zarządzania</a>
             </div>
         </div>

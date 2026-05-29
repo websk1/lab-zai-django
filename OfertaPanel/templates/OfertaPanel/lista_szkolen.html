@@ -3,35 +3,135 @@
 {% block title %}Lista Szkoleń - OfertaPanel{% endblock %}
 
 {% block content %}
-<div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem; margin-bottom: 2rem;">
-    <div>
-        <h1 class="page-title" style="margin-bottom: 0.25rem;">Lista Szkoleń</h1>
-        <p class="page-description">Przegląd wszystkich kursów i szkoleń w bazie danych.</p>
-    </div>
-    <form method="get" action="" style="display: flex; gap: 0.5rem; max-width: 400px; width: 100%;">
-        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj po tytule..." style="flex: 1; padding: 0.5rem 0.75rem; border: 1px solid var(--border-color, #e2e8f0); border-radius: 0.375rem; font-family: inherit; font-size: 0.9rem; outline: none; transition: var(--transition);">
-        <button type="submit" style="background-color: var(--primary-color, #4f46e5); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 600; font-size: 0.9rem; cursor: pointer;">Szukaj</button>
-        {% if query %}
-            <a href="{% url 'lista_szkolen' %}" style="display: inline-flex; align-items: center; justify-content: center; background-color: #f1f5f9; color: #475569; border: 1px solid var(--border-color, #e2e8f0); padding: 0.5rem 1rem; border-radius: 0.375rem; font-size: 0.9rem; text-decoration: none; font-weight: 500;">Reset</a>
-        {% endif %}
-    </form>
+<div class="page-header">
+    <h1 class="page-title">Lista Szkoleń</h1>
+    <p class="page-description">Przegląd wszystkich kursów i szkoleń w bazie danych.</p>
 </div>
 
+<div class="toolbar-container">
+    <form method="get" class="toolbar-form">
+        <div class="toolbar-group">
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj po tytule..." class="form-control" style="padding: 0.5rem 0.75rem;">
+        </div>
+        <div class="toolbar-group">
+            <select name="pub" class="toolbar-select">
+                <option value="all" {% if pub_filter == 'all' %}selected{% endif %}>Status: Wszystkie</option>
+                <option value="true" {% if pub_filter == 'true' %}selected{% endif %}>Tylko opublikowane</option>
+                <option value="false" {% if pub_filter == 'false' %}selected{% endif %}>Tylko ukryte</option>
+            </select>
+        </div>
+        <div class="toolbar-group">
+            <select name="kat" class="toolbar-select">
+                <option value="" {% if not kat_filter %}selected{% endif %}>Kategoria: Wszystkie</option>
+                {% for k in kategorie_list %}
+                    <option value="{{ k.id }}" {% if kat_filter == k.id|stringformat:"i" %}selected{% endif %}>{{ k.nazwa }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <!-- Preserve sorting parameters when submitting filters -->
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <input type="hidden" name="dir" value="{{ direction }}">
+        <div class="toolbar-group actions">
+            <button type="submit" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Filtruj</button>
+            {% if query or pub_filter != 'all' or kat_filter %}
+                <a href="{% url 'lista_szkolen' %}" class="btn-logout" style="display: inline-flex; align-items: center; justify-content: center; padding: 0.5rem 1rem;">Reset</a>
+            {% endif %}
+        </div>
+    </form>
+</div>
 
 <div class="table-container">
     <table class="modern-table">
         <thead>
             <tr>
-                <th>ID</th>
-                <th>Numer</th>
-                <th>Tytuł</th>
-                <th>Kategoria</th>
-                <th>Cena</th>
-                <th>Liczba Godzin</th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=id&dir={% if sort_by == 'id' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'id' %}sort-active{% endif %}">
+                        ID
+                        <span class="sort-icon">
+                            {% if sort_by == 'id' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=numer&dir={% if sort_by == 'numer' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'numer' %}sort-active{% endif %}">
+                        Numer
+                        <span class="sort-icon">
+                            {% if sort_by == 'numer' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=tytul&dir={% if sort_by == 'tytul' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'tytul' %}sort-active{% endif %}">
+                        Tytuł
+                        <span class="sort-icon">
+                            {% if sort_by == 'tytul' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=kategoria&dir={% if sort_by == 'kategoria' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'kategoria' %}sort-active{% endif %}">
+                        Kategoria
+                        <span class="sort-icon">
+                            {% if sort_by == 'kategoria' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=cena&dir={% if sort_by == 'cena' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'cena' %}sort-active{% endif %}">
+                        Cena
+                        <span class="sort-icon">
+                            {% if sort_by == 'cena' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=liczba_godzin&dir={% if sort_by == 'liczba_godzin' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'liczba_godzin' %}sort-active{% endif %}">
+                        Liczba Godzin
+                        <span class="sort-icon">
+                            {% if sort_by == 'liczba_godzin' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
                 <th>Status Publikacji</th>
-                <th>Kolejność</th>
+                <th>
+                    <a href="?q={{ query }}&pub={{ pub_filter }}&kat={{ kat_filter }}&sort=kolejnosc&dir={% if sort_by == 'kolejnosc' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sortable-link {% if sort_by == 'kolejnosc' %}sort-active{% endif %}">
+                        Kolejność
+                        <span class="sort-icon">
+                            {% if sort_by == 'kolejnosc' %}
+                                {% if direction == 'asc' %}▲{% else %}▼{% endif %}
+                            {% else %}
+                                ⇅
+                            {% endif %}
+                        </span>
+                    </a>
+                </th>
             </tr>
         </thead>
+
         <tbody>
             {% for sz in szkolenia %}
             <tr>

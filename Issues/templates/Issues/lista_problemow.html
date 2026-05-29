@@ -18,7 +18,41 @@
     </div>
 </section>
 
+<div class="public-toolbar" style="margin-bottom: 2rem;">
+    <form method="get" class="public-toolbar-form">
+        <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Szukaj problemu..." class="form-control" style="flex: 1; min-width: 150px; padding: 0.5rem 0.75rem;">
+        <select name="modul" class="form-control" style="width: auto; min-width: 150px; padding: 0.5rem 0.75rem;">
+            <option value="all" {% if modul_filter == 'all' %}selected{% endif %}>Moduł: Wszystkie</option>
+            {% for code, label in choices_modul %}
+                <option value="{{ code }}" {% if modul_filter == code %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="sort" value="{{ sort_by }}">
+        <input type="hidden" name="dir" value="{{ direction }}">
+        <button type="submit" class="btn-primary" style="width: auto; padding: 0.5rem 1rem; font-size: 0.9rem;">Filtruj</button>
+        {% if query or modul_filter != 'all' %}
+            <a href="{% url 'lista_problemow' %}" class="btn-back" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Reset</a>
+        {% endif %}
+    </form>
+
+    <div class="sort-tags-container">
+        <span class="sort-label">Sortowanie:</span>
+        <div class="sort-tags">
+            <a href="?q={{ query }}&modul={{ modul_filter }}&sort=data_i_godzina_zgloszenia&dir={% if sort_by == 'data_i_godzina_zgloszenia' and direction == 'desc' %}asc{% else %}desc{% endif %}" class="sort-tag {% if sort_by == 'data_i_godzina_zgloszenia' %}active{% endif %}">
+                Data {% if sort_by == 'data_i_godzina_zgloszenia' %}{% if direction == 'desc' %}▼{% else %}▲{% endif %}{% endif %}
+            </a>
+            <a href="?q={{ query }}&modul={{ modul_filter }}&sort=temat_zgloszenia&dir={% if sort_by == 'temat_zgloszenia' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'temat_zgloszenia' %}active{% endif %}">
+                Temat {% if sort_by == 'temat_zgloszenia' %}{% if direction == 'desc' %}▼{% else %}▲{% endif %}{% endif %}
+            </a>
+            <a href="?q={{ query }}&modul={{ modul_filter }}&sort=autor_zgloszenia&dir={% if sort_by == 'autor_zgloszenia' and direction == 'asc' %}desc{% else %}asc{% endif %}" class="sort-tag {% if sort_by == 'autor_zgloszenia' %}active{% endif %}">
+                Autor {% if sort_by == 'autor_zgloszenia' %}{% if direction == 'desc' %}▼{% else %}▲{% endif %}{% endif %}
+            </a>
+        </div>
+    </div>
+</div>
+
 {% if problemy %}
+
     <div class="course-list">
         {% for pr in problemy %}
             <a href="{% url 'widok_problemu' %}?id={{ pr.id }}" class="course-item">

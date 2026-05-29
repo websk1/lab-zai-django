@@ -8,3 +8,8 @@ class SzablonGeneratora(models.Model):
 
     def __str__(self):
         return f"{self.nazwa} ({self.typ})"
+
+    class Meta:
+        verbose_name = "Szablon generatora"
+        verbose_name_plural = "Szablony generatora"
+

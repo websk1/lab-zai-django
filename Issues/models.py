@@ -37,3 +37,7 @@ class ZgloszenieProblemu(models.Model):
 
     def __str__(self):
         return f"{self.temat_zgloszenia} - {self.autor_zgloszenia}"
+
+    class Meta:
+        verbose_name = "Zgłoszenie problemu"
+        verbose_name_plural = "Zgłoszenia problemów"

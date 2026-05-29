@@ -18,3 +18,7 @@ class Rejestracja(models.Model):
 
     def __str__(self):
         return f"{self.imie} {self.nazwisko} - {self.szkolenie.tytul}"
+
+    class Meta:
+        verbose_name = "Rejestracja"
+        verbose_name_plural = "Rejestracje"
