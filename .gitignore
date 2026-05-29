@@ -30,6 +30,4 @@ env/
 *.pyd
 __pycache__/
 
-# Static files (jeśli generowane)
-staticfiles/
-static/
+

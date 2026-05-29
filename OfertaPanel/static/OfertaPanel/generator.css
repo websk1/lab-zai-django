@@ -1,0 +1,320 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Arial", sans-serif;
+  box-sizing: border-box;
+}
+
+.naglowek-aplikacji {
+  background: #333;
+  color: white;
+  padding: 15px;
+  border-bottom: 2px solid #555;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.kontener-glownego-header {
+  display: flex;
+  align-items: center;
+}
+
+.kontener-trybow {
+  display: flex;
+  gap: 10px;
+}
+
+.status-dokumentu {
+  font-size: 0.9em;
+  color: #aaa;
+  margin-left: 20px;
+  font-style: italic;
+}
+
+.przycisk-zapisz {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 25px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+.przycisk-zapisz:hover {
+  background: #0056b3;
+}
+
+.btn-tryb {
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 1px solid #555;
+  background: #444;
+  color: #ccc;
+}
+.btn-tryb.aktywny {
+  background: #eee;
+  color: #333;
+  border-color: white;
+  font-weight: bold;
+}
+
+.pasek-narzedziowy {
+  background: #f4f4f4;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.kontener-pol {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.lista-dostepnych-pol {
+  display: flex;
+  gap: 8px;
+}
+.btn-pole {
+  padding: 5px 10px;
+  cursor: pointer;
+  background: white;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-family: monospace;
+}
+.btn-pole:hover {
+  background: #e2e6ea;
+}
+
+.kontener-nazwy {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 20px;
+  border-left: 1px solid #ccc;
+}
+#input-nazwa-dokumentu {
+  padding: 6px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  font-weight: bold;
+}
+
+.wybor-nosnika-zapisu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: auto;
+  padding-left: 20px;
+  border-left: 1px solid #ccc;
+  font-size: 0.9em;
+}
+.opcja-zapisu {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.komunikaty-systemowe {
+  background: #fff3cd;
+  color: #856404;
+  padding: 8px;
+  text-align: center;
+  border-bottom: 1px solid #ffeeba;
+  min-height: 24px;
+  font-weight: bold;
+  font-size: 0.9em;
+  transition: all 0.3s;
+}
+.sukces {
+  background-color: #d4edda;
+  color: #155724;
+}
+.blad {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.info {
+  background-color: #d1ecf1;
+  color: #0c5460;
+}
+
+.glowny-kontener {
+  display: flex;
+  height: calc(100% - 135px);
+}
+.panel-boczny-spis {
+  width: 280px;
+  background: #fafafa;
+  border-right: 1px solid #ccc;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.pole-filtrowania {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+.element-listy {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  background: white;
+}
+.element-listy:hover {
+  background: #e9ecef;
+}
+
+.znacznik-zrodla {
+  font-size: 0.7em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: white;
+  font-weight: bold;
+}
+.typ-json {
+  background-color: #f39c12;
+}
+.typ-db {
+  background-color: #27ae60;
+}
+
+.obszar-roboczy {
+  flex-grow: 1;
+  padding: 30px;
+  background: white;
+  overflow-y: auto;
+}
+
+.wiersz-pola {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.2s ease-out;
+}
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.przycisk-akcji {
+  padding: 4px 10px;
+  cursor: pointer;
+  background: #eee;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  min-width: 30px;
+}
+.przycisk-akcji:hover {
+  background: #ddd;
+}
+.etykieta-pola {
+  font-weight: bold;
+  min-width: 120px;
+}
+
+#pole-tekstowe-szablonu {
+  width: 100%;
+  height: 200px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-family: monospace;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  font-size: 1.1em;
+}
+
+.pasek-akcji-szablonu {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 4px;
+}
+#przycisk-dane-testowe {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+}
+#przycisk-dane-testowe:hover {
+  background-color: #5a6268;
+}
+
+.kontener-podgladu {
+  margin-top: 20px;
+  border-top: 2px dashed #ccc;
+  padding-top: 20px;
+  display: none;
+}
+.wynik-renderowania {
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 15px;
+  border-left: 5px solid #28a745;
+  font-family: "Times New Roman", serif;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.ukryty {
+  display: none !important;
+}
+
+.opcja-zapisu.zablokowane {
+  opacity: 0.5; /* Półprzezroczystość */
+  cursor: not-allowed; /* Kursor zakazu */
+  pointer-events: none; /* Blokada klikania w label */
+}
+
+.tytul-sekcji {
+  margin-top: 0;
+}
+
+.opis-sekcji {
+  color: #666;
+  font-size: 0.9em;
+  margin-bottom: 20px;
+}
+
+#widok-szablonu .opis-sekcji {
+  margin-bottom: 0;
+}
+
+.btn-usun {
+  margin-left: auto;
+  color: red;
+  font-weight: bold;
+}
