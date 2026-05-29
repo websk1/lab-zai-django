@@ -1,0 +1,33 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}Kategorie Szkoleń - Oferta Szkoleniowa{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1 class="section-title">Nasza Oferta Szkoleniowa</h1>
+    <p class="section-desc">Wybierz interesującą Cię kategorię, aby zobaczyć dostępne szkolenia.</p>
+</section>
+
+{% if kategorie_list %}
+    <div class="category-grid">
+        {% for kat in kategorie_list %}
+            <a href="{% url 'lista_szkolen_kat' kategoria=kat.nazwa %}" class="category-card">
+                <div class="category-info">
+                    {% if kat.kategoria_nadrzedna %}
+                        <span class="category-parent">{{ kat.kategoria_nadrzedna.nazwa }}</span>
+                    {% endif %}
+                    <h3>{{ kat.nazwa }}</h3>
+                </div>
+                <div class="category-stats">
+                    <!-- Dodamy zliczone szkolenia w widoku -->
+                    {{ kat.szkolenia_count }} szkolenie{{ kat.szkolenia_count|pluralize:":-e,a" }}
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>Brak dostępnych kategorii w tym momencie.</p>
+    </div>
+{% endif %}
+{% endblock %}

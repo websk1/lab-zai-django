@@ -1,0 +1,61 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}Zgłoszenie #{{ problem.id }} - {{ problem.temat_zgloszenia }}{% endblock %}
+
+{% block breadcrumb %}
+    <span class="breadcrumbs-separator">&raquo;</span>
+    <a href="{% url 'lista_problemow' %}">Zgłoszenia</a>
+    <span class="breadcrumbs-separator">&raquo;</span>
+    <span>Szczegóły zgłoszenia #{{ problem.id }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="course-detail-container">
+    <div class="course-detail-header" style="flex-direction: column; gap: 0.5rem; align-items: flex-start;">
+        <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.5rem;">
+            <span class="course-number">Zgłoszenie #{{ problem.id }}</span>
+            <span style="font-size: 0.85rem; padding: 0.2rem 0.6rem; border-radius: 9999px; background-color: #e0e7ff; color: #4338ca; font-weight: 600; text-transform: uppercase;">
+                {{ problem.get_modul_aplikacji_display }}
+            </span>
+        </div>
+        <h1 style="font-size: 2.25rem; font-weight: 700; color: #0f172a; line-height: 1.2;">{{ problem.temat_zgloszenia }}</h1>
+    </div>
+
+    <div class="course-detail-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin-bottom: 2rem;">
+        <div class="course-detail-metric">
+            <div class="metric-label">Zgłaszający</div>
+            <div class="metric-value" style="font-size: 1.2rem;">{{ problem.autor_zgloszenia }}</div>
+        </div>
+        <div class="course-detail-metric">
+            <div class="metric-label">Data zgłoszenia</div>
+            <div class="metric-value" style="font-size: 1.2rem;">{{ problem.data_i_godzina_zgloszenia|date:"Y-m-d H:i" }}</div>
+        </div>
+    </div>
+
+    <div style="margin-bottom: 2.5rem;">
+        <h3 style="font-size: 1.1rem; font-weight: 600; color: #0f172a; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+            Opis problemu
+        </h3>
+        <div style="font-size: 1.05rem; line-height: 1.7; color: #334155; white-space: pre-line; background-color: #f8fafc; padding: 1.5rem; border-radius: 0.5rem; border: 1px solid var(--border-color);">
+            {{ problem.tresc }}
+        </div>
+    </div>
+
+    {% if problem.zalacznik_graficzny %}
+        <div style="margin-bottom: 2.5rem;">
+            <h3 style="font-size: 1.1rem; font-weight: 600; color: #0f172a; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                Załączony plik graficzny
+            </h3>
+            <div style="background-color: #f8fafc; padding: 1rem; border-radius: 0.5rem; border: 1px solid var(--border-color); text-align: center;">
+                <img src="{{ problem.zalacznik_graficzny.url }}" alt="Załącznik do zgłoszenia #{{ problem.id }}" style="max-width: 100%; height: auto; border-radius: 0.25rem; box-shadow: var(--shadow-sm);">
+            </div>
+        </div>
+    {% endif %}
+
+    <div style="display: flex; gap: 1rem;">
+        <a href="{% url 'lista_problemow' %}" class="btn-back">
+            &larr; Powrót do listy
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -16,11 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from OfertaPanel import views as panel_views
+from Register import views as register_views
+from Issues import views as issues_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('offer-mng/', include('OfertaPanel.urls')),
     path('offer/', include('OfertaPubliczna.urls')),
     path('register/', include('Register.urls')),
     path('issues/', include('Issues.urls')),
+    path('categories/', panel_views.api_categories, name='api_categories'),
+    path('courses/', panel_views.api_courses, name='api_courses'),
+    path('registers/', register_views.api_registers, name='api_registers'),
+    path('register/<int:id>/', register_views.api_register_detail, name='api_register_detail'),
+    path('problemReport/', issues_views.api_problem_report, name='api_problem_report'),
+    path('problems/', issues_views.api_problems, name='api_problems'),
+    path('formTemplates', panel_views.api_form_templates, name='api_form_templates'),
+    path('messageTemplates', panel_views.api_message_templates, name='api_message_templates'),
 ]
+
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

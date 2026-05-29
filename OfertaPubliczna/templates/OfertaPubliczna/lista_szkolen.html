@@ -1,0 +1,39 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}{{ kat_nazwa }} - Szkolenia{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumbs-separator">&rsaquo;</span>
+<span>{{ kat_nazwa }}</span>
+{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1 class="section-title">Szkolenia w kategorii: {{ kat_nazwa }}</h1>
+    <p class="section-desc">Przejrzyj listę dostępnych szkoleń w tej kategorii.</p>
+</section>
+
+{% if szkolenia %}
+    <div class="course-list">
+        {% for sz in szkolenia %}
+            <a href="{% url 'opis_szkolenia' kateg=kat_nazwa course=sz.numer %}" class="course-item">
+                <div class="course-item-info">
+                    <h3>{{ sz.tytul }}</h3>
+                    <div class="course-item-meta">
+                        <span class="course-number">Kod: {{ sz.numer }}</span>
+                    </div>
+                </div>
+                <div class="course-item-price-hours">
+                    <div class="course-item-price">{{ sz.cena }} PLN</div>
+                    <div class="course-item-hours">{{ sz.liczba_godzin }} godz.</div>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state">
+        <p>Brak dostępnych szkoleń w tej kategorii.</p>
+        <a href="{% url 'kategorie' %}" class="btn-back" style="margin-top: 1.5rem;">Powrót do kategorii</a>
+    </div>
+{% endif %}
+{% endblock %}

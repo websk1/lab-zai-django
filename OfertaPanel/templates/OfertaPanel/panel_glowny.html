@@ -1,0 +1,49 @@
+{% extends 'OfertaPanel/base.html' %}
+
+{% block title %}Panel Główny - OfertaPanel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Zarządzanie Ofertą</h1>
+    <p class="page-description">Witaj w panelu administracyjnym. Wybierz jedną z poniższych sekcji, aby zarządzać bazą szkoleniową i kategoriami.</p>
+</div>
+
+<div class="welcome-card">
+    <h2>Panel zarządzania ofertą szkoleniową</h2>
+    <p>Możesz tutaj przeglądać, dodawać i edytować kategorie oraz szkolenia dostępne dla użytkowników.</p>
+</div>
+
+<div class="dashboard-grid">
+    <div class="dashboard-card">
+        <div>
+            <h3 class="card-title">Kategorie</h3>
+            <p class="card-desc">Wyświetl wszystkie zdefiniowane kategorie i podkategorie w systemie.</p>
+        </div>
+        <a href="{% url 'lista_kategorii' %}" class="card-link">Przejdź do listy →</a>
+    </div>
+
+    <div class="dashboard-card">
+        <div>
+            <h3 class="card-title">Szkolenia</h3>
+            <p class="card-desc">Wyświetl pełną listę szkoleń wraz z cenami, wymiarem godzinowym i statusami.</p>
+        </div>
+        <a href="{% url 'lista_szkolen' %}" class="card-link">Przejdź do listy →</a>
+    </div>
+
+    <div class="dashboard-card">
+        <div>
+            <h3 class="card-title">Nowa Kategoria</h3>
+            <p class="card-desc">Dodaj nową kategorię główną lub przypisz podkategorię do istniejącego rodzica.</p>
+        </div>
+        <a href="{% url 'dodaj_kategorie' %}" class="card-link">Dodaj kategorię →</a>
+    </div>
+
+    <div class="dashboard-card">
+        <div>
+            <h3 class="card-title">Nowe Szkolenie</h3>
+            <p class="card-desc">Utwórz nową ofertę szkoleniową i przypisz ją do wybranej kategorii.</p>
+        </div>
+        <a href="{% url 'dodaj_szkolenie' %}" class="card-link">Dodaj szkolenie →</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}Lista Zgłoszonych Problemów{% endblock %}
+
+{% block breadcrumb %}
+    <span class="breadcrumbs-separator">&raquo;</span>
+    <span>Problemy i Zgłoszenia</span>
+{% endblock %}
+
+{% block content %}
+<section class="page-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+    <div>
+        <h1 class="section-title">Zgłoszone problemy</h1>
+        <p class="section-desc">Lista wszystkich zarejestrowanych błędów i zgłoszeń serwisowych.</p>
+    </div>
+    <div>
+        <a href="{% url 'zgloszenie_problemu' %}" class="btn-panel-link" style="padding: 0.75rem 1.25rem; font-size: 0.95rem;">Zgłoś nowy problem</a>
+    </div>
+</section>
+
+{% if problemy %}
+    <div class="course-list">
+        {% for pr in problemy %}
+            <a href="{% url 'widok_problemu' %}?id={{ pr.id }}" class="course-item">
+                <div class="course-item-info">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                        <span class="course-number">ID: {{ pr.id }}</span>
+                        <span style="font-size: 0.8rem; padding: 0.15rem 0.5rem; border-radius: 9999px; background-color: #e0e7ff; color: #4338ca; font-weight: 600; text-transform: uppercase;">
+                            {{ pr.get_modul_aplikacji_display }}
+                        </span>
+                    </div>
+                    <h3>{{ pr.temat_zgloszenia }}</h3>
+                    <div class="course-item-meta">
+                        <span>Zgłosił: <strong>{{ pr.autor_zgloszenia }}</strong></span>
+                        <span class="breadcrumbs-separator">&bull;</span>
+                        <span>Dnia: {{ pr.data_i_godzina_zgloszenia|date:"Y-m-d H:i" }}</span>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    {% if pr.zalacznik_graficzny %}
+                        <span style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.25rem;">
+                            🖼️ Załącznik
+                        </span>
+                    {% endif %}
+                    <span style="color: var(--primary); font-weight: 600;">Szczegóły &rarr;</span>
+                </div>
+            </a>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="empty-state" style="background-color: var(--bg-card); border: 1px dashed var(--border-color); border-radius: 0.75rem; padding: 4rem 2rem;">
+        <h2 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: #0f172a;">Brak zgłoszonych problemów</h2>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Wszystkie systemy działają sprawnie. Nie odnotowano żadnych zgłoszeń.</p>
+        <a href="{% url 'zgloszenie_problemu' %}" class="btn-panel-link" style="display: inline-block;">Zgłoś pierwszy problem</a>
+    </div>
+{% endif %}
+{% endblock %}

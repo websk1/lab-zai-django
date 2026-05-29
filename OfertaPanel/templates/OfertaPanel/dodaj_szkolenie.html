@@ -1,0 +1,65 @@
+{% extends 'OfertaPanel/base.html' %}
+
+{% block title %}Dodaj Szkolenie - OfertaPanel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Dodaj Szkolenie</h1>
+    <p class="page-description">Wypełnij formularz, aby dodać nowy kurs do bazy danych.</p>
+</div>
+
+<div class="form-card">
+    <form method="POST" action="{% url 'dodaj_szkolenie' %}">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="numer">Numer szkolenia (unikalny identyfikator)</label>
+            <input type="text" id="numer" name="numer" class="form-control" placeholder="np. PY-01" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tytul">Tytuł szkolenia</label>
+            <input type="text" id="tytul" name="tytul" class="form-control" placeholder="np. Python dla początkujących" required>
+        </div>
+
+        <div class="form-group">
+            <label for="kategoria">Kategoria</label>
+            <select id="kategoria" name="kategoria" class="form-control" required>
+                <option value="" disabled selected>-- Wybierz kategorię --</option>
+                {% for kat in kategorie %}
+                    <option value="{{ kat.id }}">{{ kat.nazwa }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="cena">Cena (PLN)</label>
+            <input type="number" id="cena" name="cena" class="form-control" step="0.01" min="0" placeholder="np. 1500.00" required>
+        </div>
+
+        <div class="form-group">
+            <label for="liczba_godzin">Liczba godzin</label>
+            <input type="number" id="liczba_godzin" name="liczba_godzin" class="form-control" min="1" placeholder="np. 40" required>
+        </div>
+
+        <div class="form-group">
+            <label for="kolejnosc">Kolejność wyświetlania</label>
+            <input type="number" id="kolejnosc" name="kolejnosc" class="form-control" value="0" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="opis">Opis szkolenia</label>
+            <textarea id="opis" name="opis" class="form-control text-area" placeholder="Wpisz krótki opis szkolenia..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label class="form-check">
+                <input type="checkbox" id="publikuj" name="publikuj" checked>
+                Opublikuj szkolenie od razu
+            </label>
+        </div>
+
+        <button type="submit" class="btn-primary">Dodaj Szkolenie</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}Zgłoszenie Problemu{% endblock %}
+
+{% block breadcrumb %}
+    <span class="breadcrumbs-separator">&raquo;</span>
+    <span>Zgłoś Problem</span>
+{% endblock %}
+
+{% block content %}
+<section class="page-header" style="text-align: center; margin-bottom: 2rem;">
+    <h1 class="section-title">Zgłoś problem / awarię</h1>
+    <p class="section-desc">Napotkałeś błąd w działaniu systemu? Opisz go, a nasz zespół programistów zajmie się tym jak najszybciej.</p>
+</section>
+
+{% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<div class="form-card">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="autor_zgloszenia">Imię, nazwisko lub e-mail zgłaszającego</label>
+            <input type="text" name="autor_zgloszenia" id="autor_zgloszenia" class="form-control" placeholder="np. Jan Kowalski lub jan.kowalski@example.com" required>
+        </div>
+
+        <div class="form-group">
+            <label for="temat_zgloszenia">Temat zgłoszenia</label>
+            <input type="text" name="temat_zgloszenia" id="temat_zgloszenia" class="form-control" placeholder="Krótki opis problemu" required>
+        </div>
+
+        <div class="form-group">
+            <label for="modul_aplikacji">Moduł aplikacji, której dotyczy problem</label>
+            <select name="modul_aplikacji" id="modul_aplikacji" class="form-control" required>
+                <option value="oferta_publiczna">Oferta Publiczna</option>
+                <option value="panel_oferty">Panel Zarządzania Ofertą</option>
+                <option value="rejestracja">Rejestracja i Zgłoszenia</option>
+                <option value="inny" selected>Inny moduł / Ogólne</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tresc">Dokładny opis problemu</label>
+            <textarea name="tresc" id="tresc" class="form-control" rows="6" placeholder="Opisz krok po kroku co się stało..." required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="zalacznik_graficzny">Załącznik graficzny (opcjonalnie, np. zrzut ekranu)</label>
+            <input type="file" name="zalacznik_graficzny" id="zalacznik_graficzny" class="form-control" accept="image/*">
+        </div>
+
+        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Wyślij zgłoszenie</button>
+    </form>
+    
+    <div style="text-align: center; margin-top: 1.5rem;">
+        <a href="{% url 'lista_problemow' %}" style="color: var(--primary); text-decoration: none; font-weight: 500; font-size: 0.95rem;">&larr; Przejdź do listy zgłoszeń</a>
+    </div>
+</div>
+{% endblock %}

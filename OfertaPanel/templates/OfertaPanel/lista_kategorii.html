@@ -1,0 +1,51 @@
+{% extends 'OfertaPanel/base.html' %}
+
+{% block title %}Lista Kategorii - OfertaPanel{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1 class="page-title">Lista Kategorii</h1>
+    <p class="page-description">Przegląd wszystkich kategorii i podkategorii w bazie danych.</p>
+</div>
+
+<div class="table-container">
+    <table class="modern-table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nazwa</th>
+                <th>Kategoria Nadrzędna</th>
+                <th>Status Publikacji</th>
+                <th>Kolejność</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for kat in kategorie %}
+            <tr>
+                <td>{{ kat.id }}</td>
+                <td><strong>{{ kat.nazwa }}</strong></td>
+                <td>
+                    {% if kat.kategoria_nadrzedna %}
+                        {{ kat.kategoria_nadrzedna.nazwa }}
+                    {% else %}
+                        <span class="badge badge-muted">Główna</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if kat.publikuj %}
+                        <span class="badge badge-success">Opublikowana</span>
+                    {% else %}
+                        <span class="badge badge-muted">Ukryta</span>
+                    {% endif %}
+                </td>
+                <td>{{ kat.kolejnosc }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" style="text-align: center; color: var(--text-muted);">Brak kategorii w bazie danych. Dodaj pierwszą kategorię!</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

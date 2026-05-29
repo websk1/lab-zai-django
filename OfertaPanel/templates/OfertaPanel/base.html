@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}OfertaPanel{% endblock %}</title>
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'OfertaPanel/panel.css' %}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header class="panel-header">
+        <div class="header-logo">
+            <span class="logo-text">Oferta<strong>Panel</strong></span>
+        </div>
+        <div class="user-info">
+            {% if user.is_authenticated %}
+                <span class="welcome-user">Zalogowany jako: <strong>{{ user.username }}</strong></span>
+                <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout" style="border: none; cursor: pointer; font-family: inherit;">Wyloguj</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn-logout">Zaloguj</a>
+            {% endif %}
+        </div>
+    </header>
+ 
+    <div class="panel-container">
+        <aside class="panel-sidebar">
+            <nav class="sidebar-nav">
+                <a href="{% url 'panel_glowny' %}" class="nav-item {% if request.resolver_match.url_name == 'panel_glowny' %}active{% endif %}">
+                    Panel Główny
+                </a>
+                <a href="{% url 'lista_kategorii' %}" class="nav-item {% if request.resolver_match.url_name == 'lista_kategorii' %}active{% endif %}">
+                    Lista Kategorii
+                </a>
+                <a href="{% url 'lista_szkolen' %}" class="nav-item {% if request.resolver_match.url_name == 'lista_szkolen' %}active{% endif %}">
+                    Lista Szkoleń
+                </a>
+                <a href="{% url 'dodaj_kategorie' %}" class="nav-item {% if request.resolver_match.url_name == 'dodaj_kategorie' %}active{% endif %}">
+                    Dodaj Kategorię
+                </a>
+                <a href="{% url 'dodaj_szkolenie' %}" class="nav-item {% if request.resolver_match.url_name == 'dodaj_szkolenie' %}active{% endif %}">
+                    Dodaj Szkolenie
+                </a>
+                <a href="{% url 'generator_szablonow' %}" class="nav-item {% if request.resolver_match.url_name == 'generator_szablonow' %}active{% endif %}">
+                    Generator Szablonów
+                </a>
+            </nav>
+        </aside>
+
+        <main class="panel-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+</body>
+</html>

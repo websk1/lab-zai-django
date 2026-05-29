@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Oferta Szkoleniowa{% endblock %}</title>
+    <!-- Import Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'OfertaPubliczna/oferta.css' %}">
+</head>
+<body>
+    <header class="public-header">
+        <div class="header-container">
+            <a href="{% url 'kategorie' %}" class="logo">
+                Szkolenia<strong>Portal</strong>
+            </a>
+            <div class="nav-links">
+                <a href="{% url 'panel_glowny' %}" class="btn-panel-link">Panel Zarządzania</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <div class="breadcrumbs">
+            <a href="{% url 'kategorie' %}">Kategorie</a>
+            {% block breadcrumb %}{% endblock %}
+        </div>
+
+        <main>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    <footer class="public-footer">
+        <p>&copy; 2026 SzkoleniaPortal. Wszelkie prawa zastrzeżone.</p>
+    </footer>
+</body>
+</html>

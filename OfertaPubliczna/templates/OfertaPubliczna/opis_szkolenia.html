@@ -1,0 +1,46 @@
+{% extends 'OfertaPubliczna/oferta_base.html' %}
+
+{% block title %}{{ szkolenie.tytul }} - Szczegóły Szkolenia{% endblock %}
+
+{% block breadcrumb %}
+<span class="breadcrumbs-separator">&rsaquo;</span>
+<a href="{% url 'lista_szkolen_kat' kategoria=kat_nazwa %}">{{ kat_nazwa }}</a>
+<span class="breadcrumbs-separator">&rsaquo;</span>
+<span>{{ szkolenie.tytul }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="course-detail-container">
+    <div class="course-detail-header">
+        <div class="course-detail-title">
+            <h1>{{ szkolenie.tytul }}</h1>
+            <span class="course-number">ID szkolenia: {{ szkolenie.numer }}</span>
+        </div>
+    </div>
+
+    <div class="course-detail-grid">
+        <div class="course-detail-metric">
+            <div class="metric-label">Cena brutto</div>
+            <div class="metric-value price">{{ szkolenie.cena }} PLN</div>
+        </div>
+        <div class="course-detail-metric">
+            <div class="metric-label">Czas trwania</div>
+            <div class="metric-value">{{ szkolenie.liczba_godzin }} godzin</div>
+        </div>
+    </div>
+
+    <div class="course-description">
+        <h3 style="margin-bottom: 1rem; color: #0f172a;">Opis i cel szkolenia</h3>
+        <p>{{ szkolenie.opis|linebreaksbr }}</p>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+        <a href="{% url 'lista_szkolen_kat' kategoria=kat_nazwa %}" class="btn-back">
+            &larr; Powrót do listy szkoleń
+        </a>
+        <a href="{% url 'rejestracja' %}?szkolenie={{ szkolenie.id }}" class="btn-primary" style="display: inline-flex; align-items: center; justify-content: center; width: auto; text-decoration: none;">
+            Zgłoś się na szkolenie &rarr;
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,165 @@
+{% extends 'OfertaPanel/base.html' %}
+{% load static %}
+
+{% block title %}Generator Szablonów - OfertaPanel{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'OfertaPanel/generator.css' %}" />
+<style>
+  /* Optimize generator layout to fit inside dashboard panel content */
+  .panel-content {
+      padding: 0 !important;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden !important;
+  }
+  .glowny-kontener {
+      height: calc(100vh - 205px) !important;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+    <header class="naglowek-aplikacji">
+      <div class="kontener-glownego-header">
+        <!-- Określa tryb w jakim działa aplikacja -->
+        <div class="kontener-trybow">
+          <button
+            type="button"
+            id="przycisk-tryb-formularz"
+            class="btn-tryb aktywny"
+          >
+            Formularz (Nowy)
+          </button>
+          <button type="button" id="przycisk-tryb-szablon" class="btn-tryb">
+            Szablon (Nowy)
+          </button>
+        </div>
+        <!-- Pokazuje tryb, ID i źródło edytowanego dokumentu -->
+        <span id="status-belka" class="status-dokumentu"
+          >Tryb: Nowy Dokument</span
+        >
+      </div>
+      <!-- Zapisuje edytowany dokument -->
+      <button type="button" id="akcja-zapisz" class="przycisk-zapisz">
+        Zapisz
+      </button>
+    </header>
+
+    <nav class="pasek-narzedziowy">
+      <!-- Wyświetla pola dostępne w szablonach -->
+      <div class="kontener-pol">
+        <span>Pola:</span>
+        <div class="lista-dostepnych-pol" id="kontener-przyciskow-pol"></div>
+      </div>
+
+      <!-- Wyświetla nazwę dokumentu -->
+      <div class="kontener-nazwy">
+        <span>Nazwa dokumentu:</span>
+        <input
+          type="text"
+          id="input-nazwa-dokumentu"
+          placeholder="Szablon zlecenia"
+        />
+      </div>
+
+      <!-- Wybór nośnika zapisu w nowych dokumentach -->
+      <div class="wybor-nosnika-zapisu">
+        <span>Zapisz w:</span>
+        <label class="opcja-zapisu">
+          <input type="radio" name="tryb-zapisu" value="json" checked />
+          Plik JSON
+        </label>
+        <label class="opcja-zapisu">
+          <input type="radio" name="tryb-zapisu" value="db" />
+          Baza danych
+        </label>
+      </div>
+    </nav>
+
+    <!-- Komunikaty AJAX -->
+    <div class="komunikaty-systemowe" id="powiadomienia-ajax">
+      System gotowy.
+    </div>
+
+    <div class="glowny-kontener">
+      <aside class="panel-boczny-spis">
+        <input
+          type="text"
+          class="pole-filtrowania"
+          id="filtr-dokumentow"
+          placeholder="Filtruj listę..."
+        />
+        <div id="lista-zapisanych-dokumentow"></div>
+      </aside>
+
+      <section class="obszar-roboczy">
+        <div id="widok-formularza">
+          <h3 class="tytul-sekcji">Edycja Formularza</h3>
+          <p class="opis-sekcji">
+            Kliknij w przyciski pól na górze, aby dodać je do listy.
+          </p>
+          <div id="kontener-pol-formularza"></div>
+        </div>
+
+        <div id="widok-szablonu" class="ukryty">
+          <h3 class="tytul-sekcji">Edycja Szablonu</h3>
+          <p class="opis-sekcji">
+            Wpisz treść. Kliknij pole na górze, aby wstawić zmienną
+            <code>{nazwa}</code>.
+          </p>
+
+          <textarea
+            id="pole-tekstowe-szablonu"
+            placeholder="Wpisz tutaj treść swojego szablonu..."
+          ></textarea>
+
+          <div class="pasek-akcji-szablonu">
+            <span>Narzędzia:</span>
+            <button type="button" id="przycisk-dane-testowe">
+              Wczytaj dane testowe (Renderuj)
+            </button>
+          </div>
+
+          <div class="kontener-podgladu" id="sekcja-podgladu">
+            <h4>Wynik renderowania (Podgląd):</h4>
+            <div id="wynik-renderowania" class="wynik-renderowania"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Szablon wiersza pola czyli elementu renderowanego w obszarze roboczym dla formularza -->
+    <template id="szablon-wiersza-pola">
+      <div class="wiersz-pola" draggable="true">
+        <button
+          type="button"
+          class="przycisk-akcji btn-dol"
+          title="Przesuń w dół"
+        >
+          &darr;
+        </button>
+        <button
+          type="button"
+          class="przycisk-akcji btn-gora"
+          title="Przesuń w górę"
+        >
+          &uarr;
+        </button>
+        <span class="etykieta-pola"></span>
+        <button type="button" class="przycisk-akcji btn-usun" title="Usuń pole">
+          X
+        </button>
+      </div>
+    </template>
+
+    <!-- Szablon elementu listy plików -->
+    <template id="szablon-elementu-listy">
+      <div class="element-listy">
+        <span class="nazwa-pliku"></span>
+        <span class="znacznik-zrodla"></span>
+      </div>
+    </template>
+
+    <script type="module" src="{% static 'OfertaPanel/js/app.js' %}"></script>
+{% endblock %}
