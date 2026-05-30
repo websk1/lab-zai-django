@@ -19,13 +19,29 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
+# Load environment variables from .env file if it exists (useful for running locally outside Docker)
+import os
+env_file = BASE_DIR / '.env'
+if env_file.exists():
+    with open(env_file, encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith('#') and '=' in line:
+                key, val = line.split('=', 1)
+                val = val.strip().strip("'").strip('"')
+                os.environ.setdefault(key.strip(), val)
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-hu((5hfg#&=ay!eoeoyvpjslv(x^6pzzn6*0n5vvmsvf*x@b=1'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-hu((5hfg#&=ay!eoeoyvpjslv(x^6pzzn6*0n5vvmsvf*x@b=1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+hosts = os.environ.get('ALLOWED_HOSTS')
+if hosts:
+    ALLOWED_HOSTS = [h.strip() for h in hosts.split(',')]
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 
 
 # Application definition
@@ -76,10 +92,18 @@ WSGI_APPLICATION = 'zai.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+import os
+
+DATABASE_PATH = os.environ.get('DATABASE_PATH')
+if DATABASE_PATH:
+    db_file = Path(DATABASE_PATH)
+else:
+    db_file = BASE_DIR / 'db.sqlite3'
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': db_file,
     }
 }
 

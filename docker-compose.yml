@@ -1,0 +1,16 @@
+services:
+  web:
+    build: .
+    container_name: zai_web
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+      - db_data:/data
+    env_file:
+      - .env
+    # Runs migrations, automatically creates the superuser if it doesn't exist, and starts the server
+    command: sh -c "python manage.py migrate && python manage.py createsuperuser --no-input || true && python manage.py runserver 0.0.0.0:8000"
+
+volumes:
+  db_data:
